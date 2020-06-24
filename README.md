@@ -31,5 +31,5 @@ every subsequent line represents an edge between the first and second node
 2, 5
 6, 2
 
-
-This question can be done by using the DFS approach in the graph. Firstly, we will make the adjacency list and then traverse the nodes one by one and mark them as visited. We can also bracktrack if we didnt find the destination node. By traversing the nodes we can add the nodes traverse in the list and can print the possilble paths.
+## Explaination
+In this question our first task is to find the zero degree nodes. For this we will take a bool list and will store all the value of u and mark then as false. In that list at the places og y we can mark them true. Here, we will come to know that all the false marked nodes are Zero degree. We will pass these all the false marked nodes through DFS by making the adjacency list. We will take the false marked nodes as the source and the leaf node as the destination. Traverse all the nodes using DFS and after reaching the destination can print the path. Similarly, by this we can print all the possible paths from zero in degree nodes.
