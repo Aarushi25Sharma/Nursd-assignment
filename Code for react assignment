@@ -1,0 +1,25 @@
+class Flexi extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+    	
+    }
+  }
+  
+  onFlexSubmit(e) {
+    e.preventDefault();
+  	console.log(props.config.items)
+  }
+  
+  render() {
+    return (
+      <div>
+         <form action="">
+           <button type="submit">Submit</button>
+         </form>
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(<Flexi onSubmit={this.onFlexiSubmit} config={flexiConfig}/>, document.querySelector("#app"))
