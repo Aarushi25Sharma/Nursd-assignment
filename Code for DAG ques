@@ -1,108 +1,109 @@
-#include <iostream>
-#include <vector>
-using namespace std;
+// C++ program to print all paths from a source to destination. 
+#include<iostream> 
+#include <list> 
+using namespace std; 
 
-// data structure to store graph edges
-struct Edge {
-	int src, dest;
-};
+// A directed graph using adjacency list representation 
+class Graph 
+{ 
+    int V; // No. of vertices in graph 
+    list<int> *adj; // Pointer to an array containing adjacency lists 
 
-// class to represent a graph object
-class Graph
-{
-public:
-	// construct a vector of vectors to represent adjacency list in C++
-	vector<vector<int>> adjList;
+    // A recursive function used by printAllPaths() 
+    void printAllPathsUtil(int , int , bool [], int [], int &); 
 
-	// Graph Constructor
-	Graph(const vector<Edge> &edges, int N)
-	{
-		// resize the vector to N elements of type vector<int>
-		adjList.resize(N);
+public: 
+    Graph(int V); // Constructor 
+    void addEdge(int u, int v); 
+    void printAllPaths(int s, int d); 
+}; 
 
-		// add edges to the directed graph
-		for (auto &edge: edges) {
-			adjList[edge.src].push_back(edge.dest);
-		}
-	}
-};
+Graph::Graph(int V) 
+{ 
+    this->V = V; 
+    adj = new list<int>[V]; 
+} 
 
-// Function to perform DFS traversal in a directed graph to find the
-// complete path between source and destination vertices
-bool isConnected(const Graph &graph, int src, int dest,
-		vector<bool> &discovered, vector<int> &path)
-{
-	// mark current node as discovered
-	discovered[src] = true;
+void Graph::addEdge(int u, int v) 
+{ 
+    adj[u].push_back(v); // Add v to u’s list. 
+} 
 
-	// include current node in the path
-	path.push_back(src);
+// Prints all paths from 's' to 'd' 
+void Graph::printAllPaths(int s, int d) 
+{ 
+    // Mark all the vertices as not visited 
+    bool *visited = new bool[V]; 
 
-	// if destination vertex is found
-	if (src == dest) {
-		return true;
-	}
+    // Create an array to store paths 
+    int *path = new int[V]; 
+    int path_index = 0; // Initialize path[] as empty 
 
-	// do for every edge (src -> i)
-	for (int i: graph.adjList[src])
-	{
-		// u is not discovered
-		if (!discovered[i])
-		{
-			// return true if destination is found
-			if (isConnected(graph, i, dest, discovered, path))
-				return true;
-		}
-	}
+    // Initialize all vertices as not visited 
+    for (int i = 0; i < V; i++) 
+        visited[i] = false; 
 
-	// backtrack: remove current node from the path
-	path.pop_back();
+    // Call the recursive helper function to print all paths 
+    printAllPathsUtil(s, d, visited, path, path_index); 
+} 
 
-	// return false if destination vertex is not reachable from src
-	return false;
-}
+// A recursive function to print all paths from 'u' to 'd'. 
+// visited[] keeps track of vertices in current path. 
+// path[] stores actual vertices and path_index is current 
+// index in path[] 
+void Graph::printAllPathsUtil(int u, int d, bool visited[], 
+                            int path[], int &path_index) 
+{ 
+    // Mark the current node and store it in path[] 
+    visited[u] = true; 
+    path[path_index] = u; 
+    path_index++; 
 
-// Utility function to print a vector
-void printPath(const vector<int> &path)
-{
-	for (int i: path)
-		cout << i << ' ';
-	cout << endl;
-}
+    // If current vertex is same as destination, then print 
+    // current path[] 
+    if (u == d) 
+    { 
+        for (int i = 0; i<path_index; i++) 
+           { cout << path[i]; if(i<path_index-1)cout<<"->"; }
+        cout << endl; 
+        
+    } 
+    else // If current vertex is not destination 
+    { 
+        // Recur for all the vertices adjacent to current vertex 
+        list<int>::iterator i; 
+        for (i = adj[u].begin(); i != adj[u].end(); ++i) 
+            if (!visited[*i]) 
+                printAllPathsUtil(*i, d, visited, path, path_index); 
+    } 
 
-int main()
-{
-	// vector of graph edges as per above diagram
-	vector<Edge> edges = {
-		{0, 3}, {1, 0}, {1, 2}, {1, 4}, {2, 7}, {3, 4},
-		{3, 5}, {4, 3}, {4, 6}, {5, 6}, {6, 7}
-	};
+    // Remove current vertex from path[] and mark it as unvisited 
+    path_index--; 
+    visited[u] = false; 
+} 
 
-	// Number of nodes in the graph (labelled from 0 to N-1)
-	int N = 8;
+// Driver program 
+int main() 
+{ 
+    // Create a graph given in the above diagram 
+    int n; cin>>n;
+    int x,y; 
+    Graph g(n);
+    bool indegree[n]={false};
+    while(scanf("%d %d",&x,&y)!=EOF)
+    {
+        g.addEdge(x, y);    
+        indegree[y]=true;
+    }
+    
+    for(int i=0;i<n ;i++)
+    {
+        if(indegree[i]) continue;
+        for(int j=0;j<n;j++)
+        {
+            g.printAllPaths(i, j);
+        }
+    } 
 
-	// create a graph from given edges
-	Graph graph(edges, N);
-
-	// stores vertex is discovered or not
-	vector<bool> discovered(N);
-
-	// source and destination vertex
-	int src = 0, dest = 7;
-
-	// vector to store the complete path between source and destination
-	vector<int> path;
-
-	// perform DFS traversal from the source vertex to check the connectivity
-	// and store path from the source vertex to the destination vertex
-	if (isConnected(graph, src, dest, discovered, path))
-	{
-		cout << "Path exists from vertex " << src << " to vertex " << dest;
-		cout << "\nThe complete path is: "; printPath(path);
-	}
-	else {
-		cout << "No path exists between vertices " << src << " and " << dest;
-	}
-
-	return 0;
+    return 0; 
 }
