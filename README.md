@@ -32,4 +32,4 @@ every subsequent line represents an edge between the first and second node
 6, 2
 
 
-This question can be done by using the DFS approach in the graph. Firstly, we will make the adjacency list and then traverse the nodes one by one! and then will print all the paths possible in the graph with the help of adjacency list.
+This question can be done by using the DFS approach in the graph. Firstly, we will make the adjacency list and then traverse the nodes one by one and mark them as visited. We can also bracktrack if we didnt find the destination node. By traversing the nodes we can add the nodes traverse in the list and can print the possilble paths.
